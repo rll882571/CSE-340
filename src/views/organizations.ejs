@@ -6,29 +6,22 @@
   <p>Here are a few of our partner organizations:</p>
 
   <ul>
-    <li>
-      <img
-        src="/images/brightfuture-logo.png"
-        alt="BrightFuture Builders logo"
-      >
-      BrightFuture Builders
-    </li>
+    <% organizations.forEach(organization => { %>
+      <li>
+        <img
+          src="/images/<%= organization.logo_filename %>"
+          alt="<%= organization.name %> logo"
+        >
 
-    <li>
-      <img
-        src="/images/greenharvest-logo.png"
-        alt="GreenHarvest Growers logo"
-      >
-      GreenHarvest Growers
-    </li>
+        <h2><%= organization.name %></h2>
 
-    <li>
-      <img
-        src="/images/unityserve-logo.png"
-        alt="UnityServe Volunteers logo"
-      >
-      UnityServe Volunteers
-    </li>
+        <p><%= organization.description %></p>
+
+        <a href="mailto:<%= organization.contact_email %>">
+          <%= organization.contact_email %>
+        </a>
+      </li>
+    <% }); %>
   </ul>
 </main>
 
