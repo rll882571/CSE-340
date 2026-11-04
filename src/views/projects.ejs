@@ -5,22 +5,18 @@
 
   <h2>Upcoming Service Projects</h2>
 
-  <ul>
+  
+    <ul>
+  <% projects.forEach(project => { %>
     <li>
-      Park Cleanup - Join us to clean up local parks
-      and make them beautiful.
+      <%= project.date.toLocaleDateString('en-US', {
+        month: 'short',
+        day: 'numeric',
+        year: 'numeric'
+      }) %>: <%= project.title %> (<%= project.organization_name %>)
     </li>
-
-    <li>
-      Food Drive - Help collect and distribute food
-      to those in need.
-    </li>
-
-    <li>
-      Community Tutoring - Volunteer to tutor students
-      in various subjects.
-    </li>
-  </ul>
+  <% }); %>
+</ul>
 </main>
 
 <%- include('partials/footer') %>
