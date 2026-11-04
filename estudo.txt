@@ -1,0 +1,199 @@
+let idade + 25;
+idade +26;
+console.log(idade);vai mostar 26 pois o let deixa 
+
+if (true) {
+let mensagens + "ola";
+}
+console.log(mensagem);
+
+function somar(a,b){
+    return a +b;
+}
+
+console.log(somar(2, 3)); // 5
+
+const pessoa = {
+    nome: "ana",
+    apresentar : function(){
+        return this.nome;
+    }
+};
+
+setTimeout(() => {console.log("ola");
+},1000)
+
+
+
+
+---------------------------
+const pessoa ={
+    nome: "Ana",
+    apresentarDepois: function () {
+        setTimeout(() => {
+            console.log(this.nome);
+        }.1000);
+    }
+
+};
+
+-----------------
+
+template literal
+const nome = "Ana";
+const mensagem = `Olá, ${nome}!`;
+
+-------------------------
+const preco = 10;
+const mensagem = `O dobro do preço é ${preco * 2} reais.`;
+
+
+// 1. Encontrar os elementos do HTML.
+const carregarProdutos = document.getElementById("carregar-produtos");
+const simularErro = document.getElementById("simular-erro");
+const mensagem = document.getElementById("mensagem");
+const listaProdutos = document.getElementById("lista-produtos");
+const listaCarrinho = document.getElementById("lista-carrinho");
+const totalCarrinho = document.getElementById("total-carrinho");
+const finalizarCompra = document.getElementById("finalizar-compra");
+const mensagemCompra = document.getElementById("mensagem-compra");
+
+// 2. Guardar os produtos adicionados ao carrinho.
+const carrinho = [];
+
+// Formatar números como dinheiro.
+function formatarDinheiro(valor) {
+  return valor.toLocaleString("pt-BR", {
+    style: "currency",
+    currency: "BRL"
+  });
+}
+
+// 3. Simular uma busca no servidor usando uma Promise.
+function buscarProdutos(deveFalhar) {
+  return new Promise((resolve, reject) => {
+    setTimeout(() => {
+      if (deveFalhar) {
+        reject(new Error("Falha ao buscar produtos. Tente novamente."));
+        return;
+      }
+
+      resolve([
+        { id: 1, nome: "Camiseta", preco: 40 },
+        { id: 2, nome: "Tênis", preco: 150 },
+        { id: 3, nome: "Mochila", preco: 90 }
+      ]);
+    }, 2000);
+  });
+}
+
+// 4. Mostrar os produtos recebidos.
+function mostrarProdutos(produtos) {
+  listaProdutos.textContent = "";
+
+  produtos.forEach((produto) => {
+    const item = document.createElement("li");
+
+    const nome = document.createElement("h3");
+    nome.textContent = produto.nome;
+
+    const preco = document.createElement("p");
+    preco.textContent = formatarDinheiro(produto.preco);
+
+    const adicionar = document.createElement("button");
+    adicionar.type = "button";
+    adicionar.textContent = "Adicionar ao carrinho";
+
+    adicionar.addEventListener("click", () => {
+      carrinho.push(produto);
+      atualizarCarrinho();
+
+      mensagemCompra.textContent =
+        `${produto.nome} adicionado ao carrinho.`;
+    });
+
+    item.append(nome, preco, adicionar);
+    listaProdutos.appendChild(item);
+  });
+}
+
+// 5. Atualizar a lista e o total do carrinho.
+function atualizarCarrinho() {
+  listaCarrinho.textContent = "";
+
+  let total = 0;
+
+  carrinho.forEach((produto) => {
+    const item = document.createElement("li");
+    item.textContent =
+      `${produto.nome} — ${formatarDinheiro(produto.preco)}`;
+
+    listaCarrinho.appendChild(item);
+    total += produto.preco;
+  });
+
+  totalCarrinho.textContent = formatarDinheiro(total);
+  finalizarCompra.disabled = carrinho.length === 0;
+}
+
+// 6. Usar async, await, try e catch na busca.
+carregarProdutos.addEventListener("click", async () => {
+  carregarProdutos.disabled = true;
+  simularErro.disabled = true;
+  listaProdutos.textContent = "";
+  mensagem.textContent = "Buscando produtos...";
+
+  try {
+    // Aguarda a Promise entregar os produtos.
+    const produtos = await buscarProdutos(simularErro.checked);
+
+    mostrarProdutos(produtos);
+    mensagem.textContent = "Produtos carregados!";
+  } catch (erro) {
+    // Executa se a Promise for rejeitada.
+    mensagem.textContent = erro.message;
+  } finally {
+    // Executa tanto no sucesso quanto na falha.
+    carregarProdutos.disabled = false;
+    simularErro.disabled = false;
+  }
+});
+
+// 7. Simular a confirmação de uma compra.
+function enviarPedido() {
+  return new Promise((resolve) => {
+    setTimeout(() => {
+      resolve("Compra simulada confirmada!");
+    }, 2000);
+  });
+}
+
+// Aqui usamos .then() em vez de await, para comparar.
+finalizarCompra.addEventListener("click", () => {
+  finalizarCompra.disabled = true;
+  carregarProdutos.disabled = true;
+  listaProdutos.querySelectorAll("button").forEach((botao) => {
+    botao.disabled = true;
+  });
+
+  mensagemCompra.textContent = "Enviando pedido...";
+
+  enviarPedido()
+    .then((resposta) => {
+      mensagemCompra.textContent = resposta;
+
+      carrinho.length = 0;
+      atualizarCarrinho();
+    })
+    .catch((erro) => {
+      mensagemCompra.textContent = erro.message;
+    })
+    .finally(() => {
+      carregarProdutos.disabled = false;
+      finalizarCompra.disabled = carrinho.length === 0;
+
+      listaProdutos.querySelectorAll("button").forEach((botao) => {
+        botao.disabled = false;
+      });
+    });
+});

@@ -1,6 +1,7 @@
 import db from './db.js';
 
 const getAllProjects = async () => {
+    try {
     const query = `
         SELECT
             p.project_id,
@@ -15,6 +16,10 @@ const getAllProjects = async () => {
 
     const result = await db.query(query);
     return result.rows;
+    } catch (error) {
+        console.error("Erro ao buscar projetos:", error.message);
+        throw error; 
+    }
 };
 
 export { getAllProjects };
