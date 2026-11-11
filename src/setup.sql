@@ -2,9 +2,14 @@
 CREATE TABLE IF NOT EXISTS public.organization (
     organization_id SERIAL PRIMARY KEY,
     name VARCHAR(150) NOT NULL,
+CREATE TABLE project (
+    project_id SERIAL PRIMARY KEY,
+    organization_id INTEGER NOT NULL
+        REFERENCES organization(organization_id),
+    title VARCHAR(150) NOT NULL,
     description TEXT NOT NULL,
-    contact_email VARCHAR(255) NOT NULL,
-    logo_filename VARCHAR(255) NOT NULL
+    location VARCHAR(255) NOT NULL,
+    date DATE NOT NULL
 );
 
 INSERT INTO public.organization (name, description, contact_email, logo_filename)
@@ -69,3 +74,65 @@ INSERT INTO public.project_category (project_id, category_id) VALUES
     (6, 3), (7, 3), (8, 3), (9, 2), (9, 3),
     (10, 1), (11, 1), (12, 1), (13, 1), (14, 2), (15, 3)
 ON CONFLICT DO NOTHING;
+INSERT INTO project
+    (organization_id, title, description, location, date)
+VALUES
+(1, 'Community Park Renovation',
+ 'Repair benches and improve paths in a community park.',
+ 'Central Community Park', '2026-11-10'),
+
+(1, 'School Painting Day',
+ 'Paint classrooms and refresh school common areas.',
+ 'Sunrise Community School', '2026-11-14'),
+
+(1, 'Accessible Ramp Construction',
+ 'Build an access ramp at a neighborhood community center.',
+ 'Hope Community Center', '2026-11-18'),
+
+(1, 'Playground Restoration',
+ 'Repair playground equipment and improve the play area.',
+ 'Riverside Playground', '2026-11-21'),
+
+(1, 'Community Library Repairs',
+ 'Repair bookshelves and improve the reading space.',
+ 'Neighborhood Library', '2026-11-28'),
+
+(2, 'Community Vegetable Garden',
+ 'Plant vegetables to support local families.',
+ 'Green Valley Garden', '2026-11-11'),
+
+(2, 'Composting Workshop',
+ 'Teach residents how to compost household food scraps.',
+ 'Urban Farming Center', '2026-11-15'),
+
+(2, 'Fruit Tree Planting',
+ 'Plant fruit trees in shared neighborhood spaces.',
+ 'Eastside Community Square', '2026-11-19'),
+
+(2, 'School Garden Project',
+ 'Help students plant and care for a school garden.',
+ 'Sunrise Community School', '2026-11-22'),
+
+(2, 'Local Harvest Distribution',
+ 'Harvest and distribute fresh produce to local families.',
+ 'GreenHarvest Distribution Center', '2026-11-29'),
+
+(3, 'Food Donation Drive',
+ 'Collect and organize food donations for local families.',
+ 'Hope Community Center', '2026-11-12'),
+
+(3, 'Senior Support Day',
+ 'Visit older adults and help with everyday tasks.',
+ 'Sunshine Senior Center', '2026-11-16'),
+
+(3, 'Neighborhood Cleanup',
+ 'Collect litter and clean shared neighborhood spaces.',
+ 'Riverside Neighborhood', '2026-11-20'),
+
+(3, 'Clothing Donation Sorting',
+ 'Sort donated clothing for distribution to people in need.',
+ 'UnityServe Donation Center', '2026-11-23'),
+
+(3, 'Children Reading Day',
+ 'Read stories and organize educational activities for children.',
+ 'Neighborhood Library', '2026-11-30');
