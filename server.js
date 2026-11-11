@@ -14,14 +14,14 @@ const __dirname = path.dirname(__filename);
 
 const app = express();
 
-// Disponibiliza arquivos estáticos.
+
 app.use(express.static(path.join(__dirname, 'public')));
 
-// Configura o EJS e a pasta dos templates.
+
 app.set('view engine', 'ejs');
 app.set('views', path.join(__dirname, 'src/views'));
 
-// Middleware to log all incoming requests
+// Middleware 1: Registo de pedidos (logging)
 app.use((req, res, next) => {
   if (NODE_ENV === 'development') {
     console.log(`${req.method} ${req.url}`);
@@ -29,13 +29,14 @@ app.use((req, res, next) => {
   next();
 });
 
-// Middleware to make NODE_ENV available to all templates
+
 app.use((req, res, next) => {
   res.locals.NODE_ENV = NODE_ENV;
   next();
 });
 
-// Rotas.
+
+
 app.get('/', async (req, res) => {
   const title = 'Home';
   res.render('home', { title });
@@ -59,10 +60,44 @@ app.get('/categories', async (req, res) => {
   res.render('categories', { title, categories });
 });
 
+
+app.get('/test-error', (req, res, next) => {
+  const err = new Error('This is a test error');
+  err.status = 500;
+  next(err);
+});
+
+
+
+// Rota catch-all para apanhar páginas não encontradas (Passo 3 da atividade)
+app.use((req, res, next) => {
+  const err = new Error('Page Not Found');
+  err.status = 404;
+  next(err);
+});
+
+
+app.use((err, req, res, next) => {
+  console.error('Error occurred:', err.message);
+  console.error('Stack trace:', err.stack);
+
+  const status = err.status || 500;
+  const template = status === 404 ? '404' : '500';
+
+  const context = {
+    title: status === 404 ? 'Page Not Found' : 'Server Error',
+    error: err.message,
+    stack: err.stack
+  };
+
+  res.status(status).render(`errors/${template}`, context);
+});
+
+
+
 app.listen(PORT, async () => {
   try {
     await testConnection();
-
     console.log(`Server is running at http://127.0.0.1:${PORT}`);
     console.log(`Environment: ${NODE_ENV}`);
   } catch (error) {
