@@ -1,3 +1,6 @@
+// ==========================================
+// 1. IMPORTAÇÕES E CONFIGURAÇÕES INICIAIS
+// ==========================================
 import express from 'express';
 import { fileURLToPath } from 'url';
 import path from 'path';
@@ -14,13 +17,17 @@ const __dirname = path.dirname(__filename);
 
 const app = express();
 
-
+// ==========================================
+// 2. CONFIGURAÇÃO DE VIEWS E ARQUIVOS ESTÁTICOS
+// ==========================================
 app.use(express.static(path.join(__dirname, 'public')));
-
 
 app.set('view engine', 'ejs');
 app.set('views', path.join(__dirname, 'src/views'));
 
+// ==========================================
+// 3. MIDDLEWARES GLOBAIS
+// ==========================================
 // Middleware 1: Registo de pedidos (logging)
 app.use((req, res, next) => {
   if (NODE_ENV === 'development') {
@@ -29,36 +36,20 @@ app.use((req, res, next) => {
   next();
 });
 
-
+// Middleware 2: Variáveis globais para as views
 app.use((req, res, next) => {
   res.locals.NODE_ENV = NODE_ENV;
   next();
 });
 
+// ==========================================
+// 4. ROTAS DA APLICAÇÃO (CONTROLLERS ATUAIS)
+// ==========================================
 
 
-app.get('/', async (req, res) => {
-  const title = 'Home';
-  res.render('home', { title });
-});
 
-app.get('/organizations', async (req, res) => {
-  const organizations = await getAllOrganizations();
-  const title = 'Our Partner Organizations';
-  res.render('organizations', { title, organizations });
-});
 
-app.get('/projects', async (req, res) => {
-  const projects = await getAllProjects();
-  const title = 'Service Projects';
-  res.render('projects', { title, projects });
-});
 
-app.get('/categories', async (req, res) => {
-  const categories = await getAllCategories();
-  const title = 'Service Project Categories';
-  res.render('categories', { title, categories });
-});
 
 
 app.get('/test-error', (req, res, next) => {
@@ -67,8 +58,9 @@ app.get('/test-error', (req, res, next) => {
   next(err);
 });
 
-
-
+// ==========================================
+// 5. TRATAMENTO DE ERROS (404 E 500)
+// ==========================================
 // Rota catch-all para apanhar páginas não encontradas (Passo 3 da atividade)
 app.use((req, res, next) => {
   const err = new Error('Page Not Found');
@@ -76,7 +68,7 @@ app.use((req, res, next) => {
   next(err);
 });
 
-
+// Middleware de tratamento de erros global
 app.use((err, req, res, next) => {
   console.error('Error occurred:', err.message);
   console.error('Stack trace:', err.stack);
@@ -93,8 +85,9 @@ app.use((err, req, res, next) => {
   res.status(status).render(`errors/${template}`, context);
 });
 
-
-
+// ==========================================
+// 6. INICIALIZAÇÃO DO SERVIDOR
+// ==========================================
 app.listen(PORT, async () => {
   try {
     await testConnection();
