@@ -5,9 +5,7 @@ import express from 'express';
 import { fileURLToPath } from 'url';
 import path from 'path';
 import { testConnection } from './src/models/db.js';
-import { getAllOrganizations } from './src/models/organizations.js';
-import { getAllProjects } from './src/models/projects.js';
-import { getAllCategories } from './src/models/categories.js';
+import router from './src/routes.js';
 
 const NODE_ENV = process.env.NODE_ENV?.toLowerCase() || 'production';
 const PORT = process.env.PORT || 3000;
@@ -45,18 +43,7 @@ app.use((req, res, next) => {
 // ==========================================
 // 4. ROTAS DA APLICAÇÃO (CONTROLLERS ATUAIS)
 // ==========================================
-
-
-
-
-
-
-
-app.get('/test-error', (req, res, next) => {
-  const err = new Error('This is a test error');
-  err.status = 500;
-  next(err);
-});
+app.use(router);
 
 // ==========================================
 // 5. TRATAMENTO DE ERROS (404 E 500)
